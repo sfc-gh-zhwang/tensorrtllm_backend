@@ -130,7 +130,7 @@ function assert_curl_success {
 
 rm -f *.log *.out
 # Generate TRT_LLM engines and install dependencies
-source ./generate_engines.sh
+#source ./generate_engines.sh
 python3 -m pip install --upgrade pip && \
     pip3 install tritonclient[all] && \
     pip3 install pandas && \
