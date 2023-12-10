@@ -30,6 +30,24 @@ COPY tensorrt_llm/docker/common/install_cmake.sh /tmp/
 RUN bash /tmp/install_cmake.sh && rm /tmp/install_cmake.sh
 ENV PATH="/usr/local/cmake/bin:${PATH}"
 
+# Install EFA
+RUN curl -O https://efa-installer.amazonaws.com/aws-efa-installer-1.29.0.tar.gz
+RUN tar -xf aws-efa-installer-1.29.0.tar.gz && \
+    cd aws-efa-installer && \
+    ./efa_installer.sh -y -g -d --skip-kmod --skip-limit-conf --no-verify
+
+RUN wget https://github.com/aws/aws-ofi-nccl/releases/download/v1.7.3-aws/aws-ofi-nccl-1.7.3-aws.tar.gz
+RUN tar -xf aws-ofi-nccl-1.7.3-aws.tar.gz && \
+    cd aws-ofi-nccl-1.7.3-aws && \
+    ./configure --prefix=/opt/aws-ofi-nccl \
+    --with-mpi=/opt/amazon/openmpi \
+    --with-libfabric=/opt/amazon/efa \
+    --with-cuda=/usr/local/cuda \
+    --enable-platform-aws && \
+    make && make install
+
+ENV MPICC="/opt/amazon/openmpi/bin/mpicc"
+
 # Install mpi4py
 COPY tensorrt_llm/docker/common/install_mpi4py.sh /tmp/
 RUN bash /tmp/install_mpi4py.sh && rm /tmp/install_mpi4py.sh
