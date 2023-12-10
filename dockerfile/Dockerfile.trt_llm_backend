@@ -37,10 +37,13 @@ RUN tar -xf aws-ofi-nccl-1.7.3-aws.tar.gz && \
     --enable-platform-aws && \
     make && make install
 
+RUN env
 ENV MPI_HOME="/opt/amazon/openmpi/"
 ENV MPICC="/opt/amazon/openmpi/bin/mpicc"
 ENV LD_LIBRARY_PATH="/opt/aws-ofi-nccl/lib:/opt/amazon/openmpi/lib:$LD_LIBRARY_PATH"
 ENV PATH="/opt/aws-ofi-nccl/bin:/opt/amazon/efa:/opt/amazon/openmpi/bin/:$PATH"
+RUN export OPAL_PREFIX=""
+RUN env
 RUN echo $LD_LIBRARY_PATH
 RUN echo $PATH
 
